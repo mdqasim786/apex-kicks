@@ -1,16 +1,123 @@
-# React + Vite
+# 👟 Apex Kicks
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive sneaker store landing page built with **React**, **Vite**, and **Tailwind CSS**. The project showcases a premium e-commerce UI with smooth interactions, reusable components, and a mobile-first responsive design.
 
-Currently, two official plugins are available:
+🌐 **Live Demo:** https://apexkicks.netlify.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 🎨 Modern and premium sneaker store design
+- 📱 Fully responsive across desktop, tablet, and mobile
+- ⚡ Fast performance powered by React + Vite
+- 🧩 Reusable React components
+- 🎯 Clean and intuitive user interface
+- 💨 Built with Tailwind CSS utility-first styling
+- 🖱️ Smooth navigation and user interactions
+- 📦 Organized and scalable project structure
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ Tech Stack
+
+- React
+- Vite
+- Tailwind CSS
+- JavaScript (ES6+)
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+├── assets/
+├── components/
+├── pages/
+├── data/
+├── App.jsx
+└── main.jsx
+```
+
+---
+
+## 🚀 Getting Started
+
+Clone the repository
+
+```bash
+git clone https://github.com/mdqasim786/apex-kicks.git
+```
+
+Navigate to the project
+
+```bash
+cd apex-kicks
+```
+
+Install dependencies
+
+```bash
+npm install
+```
+
+Start the development server
+
+```bash
+npm run dev
+```
+
+---
+
+## 🎯 What I Practiced
+
+- Building modern React applications
+- Component-based architecture
+- Responsive web design
+- Tailwind CSS best practices
+- Clean project organization
+- Performance-focused frontend development
+- Reusable UI components
+
+---
+
+## 📸 Preview
+
+> Add screenshots or GIFs here to showcase the homepage, product section, and mobile responsiveness.
+
+Example:
+
+```
+/screenshots
+    hero.png
+    products.png
+    mobile.png
+```
+
+---
+
+## 🔮 Future Improvements
+
+- Product details page
+- Shopping cart functionality
+- Dark mode
+- Product filtering
+- Search functionality
+- Backend integration
+- Authentication
+- Payment gateway integration
+
+---
+
+## 👨‍💻 Author
+
+**Muhammad Qasim**
+
+Frontend Engineer passionate about building modern web experiences with React, Tailwind CSS, and JavaScript while expanding into AI Systems and full-stack development.
+
+🌐 Portfolio: https://mdqasim.netlify.app/
+
+💼 LinkedIn: https://www.linkedin.com/in/md-qasim/
+
+✍️ Medium: https://medium.com/@muhammadqasimdev
