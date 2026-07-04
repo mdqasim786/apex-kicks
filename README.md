@@ -86,9 +86,6 @@ npm run dev
 
 Example:
 
-```
-
-```
 <img width="1267" height="880" alt="image" src="https://github.com/user-attachments/assets/d7399d05-1ed5-4480-9c5b-70cead6ce01a" />
 <img width="1272" height="886" alt="image" src="https://github.com/user-attachments/assets/8361535f-df20-430b-a2f6-92c639aa4f70" />
 
