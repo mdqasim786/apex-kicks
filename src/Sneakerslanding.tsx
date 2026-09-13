@@ -132,7 +132,8 @@ export default function SneakersLanding() {
   const [scrolled, setScrolled] = useState(false);
   const [heroIn, setHeroIn] = useState(false);
   const [counts, setCounts] = useState({ pairs: 0, athletes: 0, countries: 0 });
-  const [cart, setCart] = useState(0);
+  const [cartItems, setCartItems] = useState([]);
+  const [cartOpen, setCartOpen] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const statsRef = useRef(null);
   const counted = useRef(false);
@@ -140,9 +141,32 @@ export default function SneakersLanding() {
   function scrollTo(id: string) {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   }
-  function addToCart() {
-    setCart(c => c + 1);
+  function addToCart(item: { name: string; price: string; img: string; color: string }) {
+    setCartItems(prev => {
+      const existing = prev.findIndex((c: any) => c.name === item.name);
+      if (existing >= 0) {
+        const next = [...prev];
+        next[existing] = { ...next[existing], qty: next[existing].qty + 1 };
+        return next;
+      }
+      return [...prev, { ...item, qty: 1 }];
+    });
   }
+  function removeFromCart(index: number) {
+    setCartItems(prev => prev.filter((_: any, i: number) => i !== index));
+  }
+  function updateQty(index: number, delta: number) {
+    setCartItems(prev => {
+      const next = [...prev];
+      next[index] = { ...next[index], qty: Math.max(1, next[index].qty + delta) };
+      return next;
+    });
+  }
+  const cartCount = cartItems.reduce((sum: number, c: any) => sum + c.qty, 0);
+  const cartTotal = cartItems.reduce((sum: number, c: any) => {
+    const p = parseInt(c.price.replace("$", ""));
+    return sum + p * c.qty;
+  }, 0);
 
   const S = HERO_SHOES[active];
   const A = S.color; // accent
@@ -279,16 +303,22 @@ export default function SneakersLanding() {
           </button>
 
           {/* Cart */}
-          <button className="hm" onClick={() => scrollTo("hero")} style={{
+          <button className="hm" onClick={() => setCartOpen(true)} style={{
             background: "transparent", border: `1.5px solid ${T.border}`, color: T.text,
             padding: "7px 18px", borderRadius: 3, fontFamily: "'Barlow',sans-serif",
             fontWeight: 600, fontSize: 12, letterSpacing: 2, cursor: "pointer",
             display: "flex", alignItems: "center", gap: 8, transition: "border-color .2s,color .2s",
+            position: "relative",
           }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.color = A; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.text; }}
           >
-            <IcCart /> Cart ({cart})
+            <IcCart /> Cart ({cartCount})
+            {cartCount > 0 && <span style={{
+              position: "absolute", top: -6, right: -6, width: 18, height: 18,
+              borderRadius: "50%", background: A, color: "#fff", fontSize: 9,
+              fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center",
+            }}>{cartCount}</span>}
           </button>
 
           {/* Hamburger */}
@@ -394,7 +424,7 @@ export default function SneakersLanding() {
               opacity: heroIn ? 1 : 0, transform: heroIn ? "none" : "translateY(20px)",
               transition: "all .65s .54s",
             }}>
-              <button className="bp cp" onClick={() => scrollTo("collection")}>Shop Now</button>
+              <button className="bp cp" onClick={() => { addToCart({ name: S.name, price: S.price, img: S.img, color: S.color }); setCartOpen(true); }}>Shop Now</button>
               <button className="bg cp" onClick={() => scrollTo("collection")} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 View Collection <IcArrow />
               </button>
@@ -551,7 +581,7 @@ export default function SneakersLanding() {
                   }}
                     onMouseEnter={e => e.currentTarget.style.filter = "brightness(1.15)"}
                     onMouseLeave={e => e.currentTarget.style.filter = "brightness(1)"}
-                    onClick={addToCart}
+                    onClick={() => addToCart({ name: s.name, price: s.price, img: s.img, color: s.color })}
                   >Add to Cart</button>
                 </div>
               </div>
@@ -774,6 +804,168 @@ export default function SneakersLanding() {
           </div>
         </div>
       </footer>
+
+      {/* ════════════════════════════════════
+          CART PANEL
+      ════════════════════════════════════ */}
+      {cartOpen && <div onClick={() => setCartOpen(false)} style={{
+        position: "fixed", inset: 0, background: "rgba(0,0,0,.55)", zIndex: 999,
+        opacity: cartOpen ? 1 : 0, transition: "opacity .3s",
+      }} />}
+      <div style={{
+        position: "fixed", top: 0, right: 0, bottom: 0, width: 420, maxWidth: "92vw",
+        background: T.surf, borderLeft: `1px solid ${T.border}`, zIndex: 1000,
+        transform: cartOpen ? "translateX(0)" : "translateX(100%)",
+        transition: "transform .35s cubic-bezier(.16,1,.3,1)",
+        display: "flex", flexDirection: "column", fontFamily: "'Barlow',sans-serif",
+      }}>
+        {/* Header */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "24px 28px", borderBottom: `1px solid ${T.border}`,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <IcCart />
+            <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 20, letterSpacing: 3 }}>
+              YOUR CART ({cartCount})
+            </span>
+          </div>
+          <button onClick={() => setCartOpen(false)} style={{
+            background: "none", border: "none", cursor: "pointer", color: T.muted, padding: 4,
+            transition: "color .2s",
+          }}
+            onMouseEnter={e => e.currentTarget.style.color = A}
+            onMouseLeave={e => e.currentTarget.style.color = T.muted}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        {/* Items */}
+        <div style={{ flex: 1, overflowY: "auto", padding: "8px 0" }}>
+          {cartItems.length === 0 ? (
+            <div style={{
+              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+              height: "100%", color: T.muted, gap: 16,
+            }}>
+              <IcCart />
+              <span style={{ fontSize: 14, letterSpacing: 1 }}>Your cart is empty</span>
+              <button onClick={() => { setCartOpen(false); scrollTo("collection"); }} style={{
+                background: A, color: "#fff", border: "none", padding: "10px 28px",
+                fontFamily: "'Bebas Neue',sans-serif", fontSize: 14, letterSpacing: 2, cursor: "pointer",
+                clipPath: "polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%)",
+              }}>Browse Collection</button>
+            </div>
+          ) : (
+            cartItems.map((item: any, i: number) => (
+              <div key={i} style={{
+                display: "flex", gap: 16, padding: "18px 28px",
+                borderBottom: `1px solid ${T.border}`,
+                transition: "background .2s",
+              }}
+                onMouseEnter={e => e.currentTarget.style.background = `${A}08`}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+              >
+                {/* Image */}
+                <div style={{
+                  width: 80, height: 80, background: T.card, borderRadius: 4,
+                  overflow: "hidden", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <img src={item.img} alt={item.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                </div>
+                {/* Info */}
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div>
+                    <div style={{
+                      fontFamily: "'Bebas Neue',sans-serif", fontSize: 15, letterSpacing: 2,
+                      color: T.text, marginBottom: 4,
+                    }}>{item.name}</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: item.color }}>{item.price}</div>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    {/* Qty controls */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 0, border: `1px solid ${T.border}` }}>
+                      <button onClick={() => updateQty(i, -1)} style={{
+                        width: 28, height: 28, background: "none", border: "none",
+                        color: T.text, cursor: "pointer", fontSize: 14, fontFamily: "'Barlow',sans-serif",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        transition: "background .15s",
+                      }}
+                        onMouseEnter={e => e.currentTarget.style.background = `${A}15`}
+                        onMouseLeave={e => e.currentTarget.style.background = "none"}
+                      >-</button>
+                      <span style={{
+                        width: 32, height: 28, display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: 12, fontWeight: 700, color: T.text, borderLeft: `1px solid ${T.border}`,
+                        borderRight: `1px solid ${T.border}`,
+                      }}>{item.qty}</span>
+                      <button onClick={() => updateQty(i, 1)} style={{
+                        width: 28, height: 28, background: "none", border: "none",
+                        color: T.text, cursor: "pointer", fontSize: 14, fontFamily: "'Barlow',sans-serif",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        transition: "background .15s",
+                      }}
+                        onMouseEnter={e => e.currentTarget.style.background = `${A}15`}
+                        onMouseLeave={e => e.currentTarget.style.background = "none"}
+                      >+</button>
+                    </div>
+                    {/* Remove */}
+                    <button onClick={() => removeFromCart(i)} style={{
+                      background: "none", border: "none", cursor: "pointer",
+                      color: T.muted, fontSize: 11, letterSpacing: 1, textTransform: "uppercase",
+                      fontFamily: "'Barlow Condensed',sans-serif", fontWeight: 700,
+                      transition: "color .2s",
+                    }}
+                      onMouseEnter={e => e.currentTarget.style.color = "#E8320A"}
+                      onMouseLeave={e => e.currentTarget.style.color = T.muted}
+                    >Remove</button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Footer */}
+        {cartItems.length > 0 && (
+          <div style={{ padding: "20px 28px 28px", borderTop: `1px solid ${T.border}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+              <span style={{ fontSize: 12, color: T.muted, letterSpacing: 1 }}>Subtotal</span>
+              <span style={{ fontSize: 12, color: T.muted }}>${cartTotal}</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+              <span style={{ fontSize: 12, color: T.muted, letterSpacing: 1 }}>Shipping</span>
+              <span style={{ fontSize: 12, color: A, fontWeight: 700 }}>FREE</span>
+            </div>
+            <div style={{
+              display: "flex", justifyContent: "space-between", paddingTop: 14,
+              borderTop: `1px solid ${T.border}`, marginBottom: 20,
+            }}>
+              <span style={{
+                fontFamily: "'Bebas Neue',sans-serif", fontSize: 18, letterSpacing: 3,
+              }}>TOTAL</span>
+              <span style={{
+                fontFamily: "'Bebas Neue',sans-serif", fontSize: 22, letterSpacing: 2, color: A,
+              }}>${cartTotal}</span>
+            </div>
+            <button style={{
+              width: "100%", background: A, color: "#fff", border: "none",
+              padding: "16px 0", fontFamily: "'Bebas Neue',sans-serif", fontSize: 17,
+              letterSpacing: 3, cursor: "pointer", transition: "filter .2s",
+              clipPath: "polygon(14px 0%,100% 0%,calc(100% - 14px) 100%,0% 100%)",
+            }}
+              onMouseEnter={e => e.currentTarget.style.filter = "brightness(1.12)"}
+              onMouseLeave={e => e.currentTarget.style.filter = "brightness(1)"}
+              onClick={() => { setCartOpen(false); scrollTo("cta"); }}
+            >CHECKOUT</button>
+            <div style={{ textAlign: "center", marginTop: 12, fontSize: 10, color: T.muted, letterSpacing: 1 }}>
+              Secure checkout powered by Stripe
+            </div>
+          </div>
+        )}
+      </div>
 
     </div>
   );
