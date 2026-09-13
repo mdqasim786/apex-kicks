@@ -82,6 +82,8 @@ const COLLECTION = [
 ];
 
 const NAV_LINKS = ["Home", "Collection", "Athletes", "Stories", "Contact"];
+const NAV_TARGETS = ["hero", "collection", "lifestyle", "testimonials", "cta"];
+const SECTION_MAP = { Home: "hero", Collection: "collection", Athletes: "lifestyle", Stories: "testimonials", Contact: "cta" };
 
 /* ── Inline SVG icons — zero emojis ── */
 const IcSun = () => (
@@ -130,8 +132,17 @@ export default function SneakersLanding() {
   const [scrolled, setScrolled] = useState(false);
   const [heroIn, setHeroIn] = useState(false);
   const [counts, setCounts] = useState({ pairs: 0, athletes: 0, countries: 0 });
+  const [cart, setCart] = useState(0);
+  const [emailSent, setEmailSent] = useState(false);
   const statsRef = useRef(null);
   const counted = useRef(false);
+
+  function scrollTo(id: string) {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  }
+  function addToCart() {
+    setCart(c => c + 1);
+  }
 
   const S = HERO_SHOES[active];
   const A = S.color; // accent
@@ -241,14 +252,14 @@ export default function SneakersLanding() {
       }}>
 
         {/* Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+        <div onClick={() => scrollTo("hero")} style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
           <Logo accent={A} bg={dark ? "#080808" : "#F3F2EE"} />
           <span style={{ fontSize: 22, letterSpacing: 4 }}>APEXKICK</span>
         </div>
 
         {/* Desktop nav */}
         <div className="hm" style={{ display: "flex", gap: 40 }}>
-          {NAV_LINKS.map(l => <span key={l} className="nl">{l}</span>)}
+          {NAV_LINKS.map(l => <span key={l} className="nl" onClick={() => scrollTo(SECTION_MAP[l])}>{l}</span>)}
         </div>
 
         {/* Controls */}
@@ -268,7 +279,7 @@ export default function SneakersLanding() {
           </button>
 
           {/* Cart */}
-          <button className="hm" style={{
+          <button className="hm" onClick={() => scrollTo("hero")} style={{
             background: "transparent", border: `1.5px solid ${T.border}`, color: T.text,
             padding: "7px 18px", borderRadius: 3, fontFamily: "'Barlow',sans-serif",
             fontWeight: 600, fontSize: 12, letterSpacing: 2, cursor: "pointer",
@@ -277,7 +288,7 @@ export default function SneakersLanding() {
             onMouseEnter={e => { e.currentTarget.style.borderColor = A; e.currentTarget.style.color = A; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.text; }}
           >
-            <IcCart /> Cart (0)
+            <IcCart /> Cart ({cart})
           </button>
 
           {/* Hamburger */}
@@ -312,7 +323,7 @@ export default function SneakersLanding() {
         padding: menuOpen ? "20px 5% 30px" : "0 5%",
       }}>
         {NAV_LINKS.map((l, i) => (
-          <div key={l} onClick={() => setMenuOpen(false)} style={{
+          <div key={l} onClick={() => { scrollTo(SECTION_MAP[l]); setMenuOpen(false); }} style={{
             padding: "13px 0",
             borderBottom: i < NAV_LINKS.length - 1 ? `1px solid ${T.border}` : "none",
             fontSize: 34, cursor: "pointer", transition: "color .2s", color: T.text,
@@ -327,7 +338,7 @@ export default function SneakersLanding() {
       {/* ════════════════════════════════════
           HERO
       ════════════════════════════════════ */}
-      <section style={{ minHeight: "100vh", padding: "68px 5% 0", position: "relative", display: "flex", alignItems: "center", overflow: "hidden" }}>
+      <section id="hero" style={{ minHeight: "100vh", padding: "68px 5% 0", position: "relative", display: "flex", alignItems: "center", overflow: "hidden" }}>
         {/* Grid */}
         <div className="gl" style={{ position: "absolute", inset: 0 }} />
 
@@ -383,8 +394,8 @@ export default function SneakersLanding() {
               opacity: heroIn ? 1 : 0, transform: heroIn ? "none" : "translateY(20px)",
               transition: "all .65s .54s",
             }}>
-              <button className="bp cp">Shop Now</button>
-              <button className="bg cp" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <button className="bp cp" onClick={() => scrollTo("collection")}>Shop Now</button>
+              <button className="bg cp" onClick={() => scrollTo("collection")} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                 View Collection <IcArrow />
               </button>
             </div>
@@ -490,7 +501,7 @@ export default function SneakersLanding() {
       {/* ════════════════════════════════════
           COLLECTION
       ════════════════════════════════════ */}
-      <section style={{ padding: "110px 5%" }}>
+      <section id="collection" style={{ padding: "110px 5%" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 64, flexWrap: "wrap", gap: 20 }}>
           <div>
             <div style={{ fontSize: 10, letterSpacing: 6, color: A, fontWeight: 800, textTransform: "uppercase", marginBottom: 16, fontFamily: "'Barlow Condensed',sans-serif", display: "flex", alignItems: "center", gap: 12 }}>
@@ -500,7 +511,7 @@ export default function SneakersLanding() {
               THE<br /><span style={{ color: A }}>COLLECTION</span>
             </h2>
           </div>
-          <button className="bg cp" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button className="bg cp" onClick={() => scrollTo("collection")} style={{ display: "flex", alignItems: "center", gap: 10 }}>
             View All <IcArrow />
           </button>
         </div>
@@ -540,6 +551,7 @@ export default function SneakersLanding() {
                   }}
                     onMouseEnter={e => e.currentTarget.style.filter = "brightness(1.15)"}
                     onMouseLeave={e => e.currentTarget.style.filter = "brightness(1)"}
+                    onClick={addToCart}
                   >Add to Cart</button>
                 </div>
               </div>
@@ -617,7 +629,7 @@ export default function SneakersLanding() {
       {/* ════════════════════════════════════
           LIFESTYLE BANNER
       ════════════════════════════════════ */}
-      <section style={{ margin: "0 5%", position: "relative", height: 500, overflow: "hidden", borderRadius: 4 }}>
+      <section id="lifestyle" style={{ margin: "0 5%", position: "relative", height: 500, overflow: "hidden", borderRadius: 4 }}>
         <img
           src="https://plus.unsplash.com/premium_photo-1664304770925-6f9a1386d7b9?q=80&w=1073&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Athlete in action"
@@ -629,14 +641,14 @@ export default function SneakersLanding() {
           <h3 style={{ fontSize: "clamp(34px,5vw,72px)", color: "#fff", lineHeight: .9, marginBottom: 30 }}>
             PERFORMANCE<br />WITHOUT<br />COMPROMISE
           </h3>
-          <button className="bp cp">Explore Series</button>
+          <button className="bp cp" onClick={() => scrollTo("testimonials")}>Explore Series</button>
         </div>
       </section>
 
       {/* ════════════════════════════════════
           TESTIMONIALS
       ════════════════════════════════════ */}
-      <section style={{ background: T.surf, borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}`, padding: "110px 5%", marginTop: 80 }}>
+      <section id="testimonials" style={{ background: T.surf, borderTop: `1px solid ${T.border}`, borderBottom: `1px solid ${T.border}`, padding: "110px 5%", marginTop: 80 }}>
         <div style={{ textAlign: "center", marginBottom: 64 }}>
           <div style={{ fontSize: 10, letterSpacing: 6, color: A, fontWeight: 800, textTransform: "uppercase", marginBottom: 18, fontFamily: "'Barlow Condensed',sans-serif" }}>Reviews</div>
           <h2 style={{ fontSize: "clamp(40px,6vw,88px)", textTransform: "uppercase", lineHeight: .9 }}>
@@ -677,7 +689,7 @@ export default function SneakersLanding() {
       {/* ════════════════════════════════════
           CTA
       ════════════════════════════════════ */}
-      <section style={{ padding: "130px 5%", textAlign: "center", position: "relative", overflow: "hidden" }}>
+      <section id="cta" style={{ padding: "130px 5%", textAlign: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, background: `radial-gradient(ellipse at center,${A}18 0%,transparent 62%)`, pointerEvents: "none" }} />
         <div style={{ position: "relative" }}>
           <div style={{ fontSize: 10, letterSpacing: 6, color: A, fontWeight: 800, textTransform: "uppercase", marginBottom: 22, fontFamily: "'Barlow Condensed',sans-serif" }}>Limited Drop</div>
@@ -693,7 +705,7 @@ export default function SneakersLanding() {
               background: T.card, border: `1.5px solid ${T.border}`, borderRight: "none",
               color: T.text, fontFamily: "'Barlow',sans-serif", fontSize: 14, outline: "none",
             }} />
-            <button className="bp" style={{ clipPath: "none", borderRadius: 0 }}>Get Early Access</button>
+            <button className="bp" onClick={() => setEmailSent(true)} style={{ clipPath: "none", borderRadius: 0 }}>{emailSent ? "You're In!" : "Get Early Access"}</button>
           </div>
         </div>
       </section>
@@ -734,14 +746,14 @@ export default function SneakersLanding() {
 
           {/* Link columns */}
           {[
-            { title: "Shop", links: ["New Arrivals", "Men", "Women", "Kids", "Sale", "Collabs"] },
-            { title: "Company", links: ["About Us", "Careers", "Press", "Sustainability", "Investors"] },
-            { title: "Support", links: ["FAQ", "Shipping Info", "Returns", "Size Guide", "Track Order"] },
+            { title: "Shop", links: ["New Arrivals", "Men", "Women", "Kids", "Sale", "Collabs"], target: "collection" },
+            { title: "Company", links: ["About Us", "Careers", "Press", "Sustainability", "Investors"], target: "lifestyle" },
+            { title: "Support", links: ["FAQ", "Shipping Info", "Returns", "Size Guide", "Track Order"], target: "cta" },
           ].map(col => (
             <div key={col.title}>
               <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 5, textTransform: "uppercase", marginBottom: 22, color: A, fontFamily: "'Barlow Condensed',sans-serif" }}>{col.title}</div>
               {col.links.map(l => (
-                <div key={l} style={{ fontSize: 13, color: T.muted, marginBottom: 13, cursor: "pointer", fontFamily: "'Barlow',sans-serif", transition: "color .18s" }}
+                <div key={l} onClick={() => scrollTo(col.target)} style={{ fontSize: 13, color: T.muted, marginBottom: 13, cursor: "pointer", fontFamily: "'Barlow',sans-serif", transition: "color .18s" }}
                   onMouseEnter={e => e.target.style.color = A}
                   onMouseLeave={e => e.target.style.color = T.muted}>
                   {l}
@@ -755,7 +767,7 @@ export default function SneakersLanding() {
           <div style={{ fontSize: 11, color: T.muted, fontFamily: "'Barlow',sans-serif" }}>© 2025 ApexKick Inc. All rights reserved.</div>
           <div style={{ display: "flex", gap: 24 }}>
             {["Privacy Policy", "Terms of Service", "Cookie Settings"].map(l => (
-              <span key={l} style={{ fontSize: 11, color: T.muted, cursor: "pointer", fontFamily: "'Barlow',sans-serif", transition: "color .18s" }}
+              <span key={l} onClick={() => scrollTo("cta")} style={{ fontSize: 11, color: T.muted, cursor: "pointer", fontFamily: "'Barlow',sans-serif", transition: "color .18s" }}
                 onMouseEnter={e => e.target.style.color = A}
                 onMouseLeave={e => e.target.style.color = T.muted}>{l}</span>
             ))}
