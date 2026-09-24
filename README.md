@@ -15,7 +15,6 @@ A modern, responsive sneaker store landing page built with **React**, **Vite**, 
 - 🎯 Clean and intuitive user interface
 - 💨 Built with Tailwind CSS utility-first styling
 - 🖱️ Smooth navigation and user interactions
-- 📦 Organized and scalable project structure
 
 ---
 
